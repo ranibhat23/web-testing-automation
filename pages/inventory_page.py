@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 from pages.base_page import BasePage
 
@@ -33,6 +34,10 @@ class InventoryPage(BasePage):
 
     def open_cart(self):
         self.click(self.CART_LINK)
+
+        self.wait.until(
+            EC.url_contains("/cart.html")
+        )
 
     def get_cart_count(self):
         return self.get_text(self.CART_BADGE)

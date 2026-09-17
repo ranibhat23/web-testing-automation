@@ -5,6 +5,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 
+SCREENSHOT_DIR = os.path.join("reports", "screenshots")
+
+
 @pytest.fixture
 def driver():
 
@@ -21,6 +24,12 @@ def driver():
     driver.quit()
 
 
+def pytest_sessionstart(session):
+    """Create the screenshot directory before tests start."""
+
+    os.makedirs(SCREENSHOT_DIR, exist_ok=True)
+
+
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
 
@@ -33,18 +42,8 @@ def pytest_runtest_makereport(item, call):
 
         if driver:
 
-            screenshot_dir = os.path.join(
-                "reports",
-                "screenshots"
-            )
-
-            os.makedirs(
-                screenshot_dir,
-                exist_ok=True
-            )
-
             screenshot_path = os.path.join(
-                screenshot_dir,
+                SCREENSHOT_DIR,
                 f"{item.name}.png"
             )
 
