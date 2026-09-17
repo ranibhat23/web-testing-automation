@@ -11,6 +11,8 @@ def driver():
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--window-size=1920,1080")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
 
     driver = webdriver.Chrome(options=options)
 
@@ -30,8 +32,16 @@ def pytest_runtest_makereport(item, call):
         driver = item.funcargs.get("driver")
 
         if driver:
-            screenshot_dir = "reports/screenshots"
-            os.makedirs(screenshot_dir, exist_ok=True)
+
+            screenshot_dir = os.path.join(
+                "reports",
+                "screenshots"
+            )
+
+            os.makedirs(
+                screenshot_dir,
+                exist_ok=True
+            )
 
             screenshot_path = os.path.join(
                 screenshot_dir,
