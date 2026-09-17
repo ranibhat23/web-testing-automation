@@ -50,7 +50,17 @@ class CheckoutPage(BasePage):
         self.click(self.CONTINUE_BUTTON)
 
     def complete_order(self):
-        self.click(self.FINISH_BUTTON)
+        self.wait.until(
+            EC.url_contains("/checkout-step-two.html")
+        )
+
+        finish_button = self.wait.until(
+            EC.element_to_be_clickable(
+                self.FINISH_BUTTON
+            )
+        )
+
+        finish_button.click()
 
         self.wait.until(
             EC.presence_of_element_located(
