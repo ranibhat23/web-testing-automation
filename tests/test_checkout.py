@@ -1,11 +1,12 @@
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from pages.cart_page import CartPage
+from pages.checkout_page import CheckoutPage
 
 from utils.config import BASE_URL, STANDARD_USER, PASSWORD
 
 
-def test_cart_contains_selected_product(driver):
+def test_complete_checkout(driver):
 
     driver.get(BASE_URL)
 
@@ -23,4 +24,20 @@ def test_cart_contains_selected_product(driver):
 
     cart_page = CartPage(driver)
 
-    assert cart_page.get_number_of_items() == 1
+    cart_page.click_checkout()
+
+    checkout_page = CheckoutPage(driver)
+
+    checkout_page.enter_customer_details(
+        "Rani",
+        "Raviraj",
+        "2000"
+    )
+
+    checkout_page.continue_checkout()
+    checkout_page.complete_order()
+
+    assert (
+        checkout_page.get_confirmation_message()
+        == "Thank you for your order!"
+    )

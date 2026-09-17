@@ -1,57 +1,53 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-
 from pages.login_page import LoginPage
+from utils.config import (
+    BASE_URL,
+    STANDARD_USER,
+    PASSWORD,
+    LOCKED_OUT_USER
+)
 
 
-def create_driver():
-    options = Options()
-    options.add_argument("--headless")
+def test_valid_login(driver):
 
-    return webdriver.Chrome(options=options)
+    driver.get(BASE_URL)
 
+    login_page = LoginPage(driver)
 
-def test_valid_login():
+    login_page.login(
+        STANDARD_USER,
+        PASSWORD
+    )
 
-    driver = create_driver()
-
-    try:
-        driver.get("https://www.saucedemo.com/")
-
-        login_page = LoginPage(driver)
-
-        login_page.login(
-            "standard_user",
-            "secret_sauce"
-        )
-
-        assert "inventory" in driver.current_url
-
-    finally:
-        driver.quit()
+    assert "inventory" in driver.current_url
 
 
-def test_invalid_login():
+def test_invalid_login(driver):
 
-    driver = create_driver()
+    driver.get(BASE_URL)
 
-    try:
-        driver.get("https://www.saucedemo.com/")
+    login_page = LoginPage(driver)
 
-        login_page = LoginPage(driver)
+    login_page.login(
+        STANDARD_USER,
+        "wrong_password"
+    )
 
-        login_page.login(
-            "standard_user",
-            "wrong_password"
-        )
+    assert "Username and password do not match" in (
+        login_page.get_error_message()
+    )
 
-        error_message = driver.find_element(
-            By.CSS_SELECTOR,
-            "[data-test='error']"
-        )
 
-        assert "Username and password do not match" in error_message.text
+def test_locked_out_user(driver):
 
-    finally:
-        driver.quit()
+    driver.get(BASE_URL)
+
+    login_page = LoginPage(driver)
+
+    login_page.login(
+        LOCKED_OUT_USER,
+        PASSWORD
+    )
+
+    assert "locked out" in (
+        login_page.get_error_message()
+    )

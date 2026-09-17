@@ -1,11 +1,23 @@
 from selenium.webdriver.common.by import By
 
+from pages.base_page import BasePage
 
-class InventoryPage:
 
-    ADD_TO_CART_BUTTON = (
+class InventoryPage(BasePage):
+
+    BACKPACK_ADD_BUTTON = (
         By.ID,
         "add-to-cart-sauce-labs-backpack"
+    )
+
+    BACKPACK_REMOVE_BUTTON = (
+        By.ID,
+        "remove-sauce-labs-backpack"
+    )
+
+    CART_LINK = (
+        By.CLASS_NAME,
+        "shopping_cart_link"
     )
 
     CART_BADGE = (
@@ -13,15 +25,14 @@ class InventoryPage:
         "shopping_cart_badge"
     )
 
-    def __init__(self, driver):
-        self.driver = driver
-
     def add_backpack_to_cart(self):
-        self.driver.find_element(
-            *self.ADD_TO_CART_BUTTON
-        ).click()
+        self.click(self.BACKPACK_ADD_BUTTON)
+
+    def remove_backpack_from_cart(self):
+        self.click(self.BACKPACK_REMOVE_BUTTON)
+
+    def open_cart(self):
+        self.click(self.CART_LINK)
 
     def get_cart_count(self):
-        return self.driver.find_element(
-            *self.CART_BADGE
-        ).text
+        return self.get_text(self.CART_BADGE)
