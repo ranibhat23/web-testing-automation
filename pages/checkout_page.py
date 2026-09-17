@@ -53,7 +53,9 @@ class CheckoutPage(BasePage):
         self.click(self.FINISH_BUTTON)
 
         self.wait.until(
-            EC.visibility_of_element_located(self.COMPLETE_MESSAGE)
+            EC.presence_of_element_located(
+                self.COMPLETE_MESSAGE
+            )
         )
 
     def get_confirmation_message(self):
